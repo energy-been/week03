@@ -373,6 +373,15 @@
             height: auto !important;
         }
 
+        .wrap_notice_check{
+            position: absolute;
+            width: 150.2px;
+            height: 18.7px;
+            bottom: 15px;
+            left: 17px;
+        }
+
+
     </style>
     <script>
         // 미리 작성된 영역 - 수정하지 않으셔도 됩니다.
@@ -583,7 +592,12 @@
         <textarea class="field" placeholder="공유하고 싶은 소식을 입력해주세요" name="contents" id="contents" cols="30"
                   rows="10"></textarea>
         <!--            <button class="btn btn-danger" onclick="writePost()">작성하기</button>-->
+        <label class="wrap_notice_check">
+            <input type="checkbox" class="notice_check" name="notice_check">
+            공지로 작성
+        </label>
         <img src="images/send.png" alt="" onclick="writePost()">
+
     </div>
     <div id="cards-box" class="area-read">
         <div class="card">
