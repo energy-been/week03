@@ -25,7 +25,7 @@ public class MemoController {
 
     @GetMapping("/api/memos")
     public List<Memo> readMemo(){
-        LocalDateTime start = LocalDateTime.now().minusMonths(1);
+        LocalDateTime start = LocalDateTime.now().minusYears(1);
         LocalDateTime end = LocalDateTime.now();
         return memoRepository.findAllByModifiedAtBetweenOrderByModifiedAtDesc(start, end);
     }
@@ -41,4 +41,5 @@ public class MemoController {
         memoService.update(id, requestDto);
         return id;
     }
+
 }

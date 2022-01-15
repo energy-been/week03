@@ -208,6 +208,7 @@
             margin-bottom: 12px;
         }
 
+
         .card .metadata {
             position: relative;
             display: flex;
@@ -260,7 +261,7 @@
         .footer img.icon-start-edit {
             cursor: pointer;
             position: absolute;
-            bottom: 14px;
+            bottom: 15px;
             right: 55px;
             width: 18px;
             height: 18px;
@@ -279,13 +280,27 @@
         .footer img.icon-delete {
             cursor: pointer;
             position: absolute;
-            bottom: 12px;
+            bottom: 14px;
             right: 19px;
             width: 14px;
             height: 18px;
         }
 
+        .footer img.icon-back-edit {
+            cursor: pointer;
+            position: absolute;
+            display: none;
+            bottom: 13px;
+            right: 95px;
+            width: 19px;
+            height: 21px;
+        }
+
         #cards-box {
+            margin-top: 12px;
+        }
+
+        #notice-cards-box {
             margin-top: 12px;
         }
 
@@ -373,8 +388,18 @@
             height: auto !important;
         }
 
+        .wrap_notice_check{
+            position: absolute;
+            width: 150.2px;
+            height: 18.7px;
+            bottom: 15px;
+            left: 17px;
+        }
+
+
     </style>
     <script>
+        let noticeId = 0;
         // 미리 작성된 영역 - 수정하지 않으셔도 됩니다.
         // 사용자가 내용을 올바르게 입력하였는지 확인합니다.
         function isValidContents(contents) {
@@ -413,7 +438,8 @@
         function showEdits(id) {
             $(`#${id}-editarea`).show();
             $(`#${id}-submit`).show();
-            $(`#${id}-delete`).show();
+           // $(`#${id}-delete`).show();
+            $(`#${id}-back`).show();
 
             $(`#${id}-contents`).hide();
             $(`#${id}-edit`).hide();
@@ -422,8 +448,9 @@
         function hideEdits(id) {
             $(`#${id}-editarea`).hide();
             $(`#${id}-submit`).hide();
-            $(`#${id}-delete`).hide();
+            $(`#${id}-back`).hide();
 
+            //$(`#${id}-delete`).show();
             $(`#${id}-contents`).show();
             $(`#${id}-edit`).show();
         }
@@ -439,6 +466,7 @@
         function getMessages() {
             // 1. 기존 메모 내용을 지웁니다.
             $('#cards-box').empty();
+            $('#notice-cards-box').empty();
             // 2. 메모 목록을 불러와서 HTML로 붙입니다.
             $.ajax({
                 type: 'GET',
@@ -447,11 +475,17 @@
                     console.log(response);
                     for (let i = 0; i < response.length; i++) {
                         let message = response[i];
+                        let notice = message['notice']
                         let id = message['id'];
                         let username = message['username'];
                         let contents = message['contents'];
                         let modifiedAt = message['modifiedAt'];
-                        addHTML(id, username, contents, modifiedAt);
+                        if(notice ==='Y'){
+                            addNoticeHTML(id, username, contents, modifiedAt);
+                        }
+                        else{
+                            addHTML(id, username, contents, modifiedAt);
+                        }
                     }
                 }
             })
@@ -484,16 +518,53 @@
             <img id="${id}-edit" class="icon-start-edit" src="images/edit.png" alt="" onclick="editPost('${id}')">
             <img id="${id}-delete" class="icon-delete" src="images/delete.png" alt="" onclick="deleteOne('${id}')">
             <img id="${id}-submit" class="icon-end-edit" src="images/done.png" alt="" onclick="submitEdit('${id}')">
+            <img id="${id}-back" class="icon-back-edit" src="images/back.png" alt="" onclick="hideEdits('${id}')">
         </div>
     </div>`;
             // 2. #cards-box 에 HTML을 붙인다.
             $('#cards-box').append(tempHtml);
         }
 
+        function addNoticeHTML(id, username, contents, modifiedAt) {
+            // 1. HTML 태그를 만듭니다.
+            let tempHtml = `<div class="card" style="background-color: indianred">
+        <!-- date/username 영역 -->
+        <div class="metadata">
+            <div class="date">
+                ${modifiedAt}
+            </div>
+            <div id="${id}-username" class="username">
+                ${username}
+            </div>
+        </div>
+        <!-- contents 조회/수정 영역-->
+        <div class="contents">
+            <div id="${id}-contents" class="text">
+                ${contents}
+            </div>
+            <div id="${id}-editarea" class="edit">
+                <textarea id="${id}-textarea" class="te-edit" name="" id="" cols="30" rows="5"></textarea>
+            </div>
+        </div>
+        <!-- 버튼 영역-->
+        <div class="footer">
+            <img id="${id}-edit" class="icon-start-edit" src="images/edit.png" alt="" onclick="editPost('${id}')">
+            <img id="${id}-delete" class="icon-delete" src="images/delete.png" alt="" onclick="deleteOne('${id}')">
+            <img id="${id}-submit" class="icon-end-edit" src="images/done.png" alt="" onclick="submitEdit('${id}')">
+            <img id="${id}-back" class="icon-back-edit" src="images/back.png" alt="" onclick="hideEdits('${id}')">
+        </div>
+    </div>`;
+            // 2. #cards-box 에 HTML을 붙인다.
+            $('#notice-cards-box').append(tempHtml);
+        }
         // 메모를 생성합니다.
         function writePost() {
             // 1. 작성한 메모를 불러옵니다.
             let contents = $('#contents').val();
+
+            let checked = $("input[name='notice_check']").prop("checked");
+
+            console.log(checked);
             // 2. 작성한 메모가 올바른지 isValidContents 함수를 통해 확인합니다.
             if (isValidContents(contents) == false) {
                 return;
@@ -501,7 +572,15 @@
             // 3. genRandomName 함수를 통해 익명의 username을 만듭니다.
             let username = genRandomName(10);
             // 4. 전달할 data JSON으로 만듭니다.
-            let data = {'username': username, 'contents': contents};
+            let data;
+            if (checked === true){
+
+                data = {'username': username, 'contents': contents, 'notice': 'Y'};
+            }
+            else {
+                data = {'username': username, 'contents': contents, 'notice': 'N'};
+            }
+
             // 5. POST /api/memos 에 data를 전달합니다.
             $.ajax({
                 type: "POST",
@@ -521,11 +600,11 @@
             let username = $(`#${id}-username`).text().trim();
             let contents = $(`#${id}-textarea`).val().trim();
             // 2. 작성한 메모가 올바른지 isValidContents 함수를 통해 확인합니다.
-            if (isValidContents(contents) == false) {
+            if (isValidContents(contents) === false) {
                 return;
             }
             // 3. 전달할 data JSON으로 만듭니다.
-            let data = {'username': username, 'contents': contents};
+            let data = {'username': username, 'contents': contents, 'notice': 'N'};
             // 4. PUT /api/memos/{id} 에 data를 전달합니다.
             $.ajax({
                 type: "PUT",
@@ -583,9 +662,18 @@
         <textarea class="field" placeholder="공유하고 싶은 소식을 입력해주세요" name="contents" id="contents" cols="30"
                   rows="10"></textarea>
         <!--            <button class="btn btn-danger" onclick="writePost()">작성하기</button>-->
+        <label class="wrap_notice_check">
+            <input type="checkbox" class="notice_check" name="notice_check" value="Y">
+            공지로 작성
+        </label>
         <img src="images/send.png" alt="" onclick="writePost()">
+
+    </div>
+    <div id="notice-cards-box" class="area-read">
+        ddddddd
     </div>
     <div id="cards-box" class="area-read">
+
         <div class="card">
             <!-- date/username 영역 -->
             <div class="metadata">
@@ -599,7 +687,7 @@
             <!-- contents 조회/수정 영역-->
             <div class="contents">
                 <div id="1-contents" class="text">
-                    dsafnkalfklewakflekelafkleajfkleafkldsankflenwaklfnekwlafneklwanfkelawnfkelanfkleanfklew
+                     예시내용입니다.
                 </div>
                 <div id="1-editarea" class="edit">
                     <textarea id="1-textarea" class="te-edit" name="" id="" cols="30" rows="5"></textarea>
@@ -610,6 +698,7 @@
                 <img id="1-edit" onclick="editPost('1')" class="icon-start-edit" src="images/edit.png" alt="">
                 <img id="1-delete" onclick="deleteOne('1')" class="icon-delete" src="images/delete.png" alt="">
                 <img id="1-submit" onclick="submitEdit('1')" class="icon-end-edit" src="images/done.png" alt="">
+                <img id="1-back" onclick="hideEdits('1')" class="icon-back-edit" src="images/back.png" alt="">
             </div>
         </div>
     </div>

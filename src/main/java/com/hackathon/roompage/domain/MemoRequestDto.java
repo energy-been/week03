@@ -8,5 +8,6 @@ import lombok.NoArgsConstructor;
 public class MemoRequestDto {
     private String username;
     private String contents;
+    private String notice;
 
 }
