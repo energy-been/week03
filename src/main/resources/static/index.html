@@ -25,8 +25,8 @@
             margin: 10px auto;
         }
 
-        .schedule_button{
-            width: 200px;
+        .schedule-button{
+            width: 180px;
             height: 40px;
             border-radius: 4px;
             background-color: white;
@@ -40,28 +40,28 @@
             cursor: pointer;
         }
 
-        .schedule_button span{
+        .schedule-button span{
             cursor: pointer;
             display: inline-block;
             position: relative;
             transition: 0.5s;
         }
 
-        .schedule_button span::after{
+        .schedule-button span::after{
             content: '\00bb';
             position: absolute;
             opacity: 0;
             top: 0;
-            right: -20px;
+            right: 0px;
             transition: 0.5s;
         }
 
-        .schedule_button:hover span{
+        .schedule-button:hover span{
             font-size:23px;
             color: #339af0;
         }
 
-        .user_button{
+        .user-button{
             width: 200px;
             height: 40px;
             border-radius: 4px;
@@ -76,14 +76,52 @@
             cursor: pointer;
         }
 
-        .user_button span{
+        .user-button span{
             cursor: pointer;
             display: inline-block;
             position: relative;
             transition: 0.5s;
         }
 
-        .user_button span::after{
+        .user-button span::after{
+            content: '\00bb';
+            position: absolute;
+            opacity: 0;
+            top: 0;
+            right: 0px;
+            transition: 0.5s;
+        }
+
+        .user-button:hover span{
+            font-size:23px;
+            color: #339af0;
+        }
+
+        .notice-button{
+            width: 100px;
+            height: 40px;
+            border-radius: 4px;
+            background-color: white;
+            border: none;
+            color: #212529;
+            text-align: center;
+            font-size: 18px;
+            font-family: "Noto Sans KR";
+            margin-bottom: 20px;
+            margin-left: 30px;
+            margin-right: auto;
+            cursor: pointer;
+            align-self: center;
+        }
+
+        .notice-button span{
+            cursor: pointer;
+            display: inline-block;
+            position: relative;
+            transition: 0.5s;
+        }
+
+        .notice-button span::after{
             content: '\00bb';
             position: absolute;
             opacity: 0;
@@ -92,8 +130,8 @@
             transition: 0.5s;
         }
 
-        .user_button:hover span{
-            font-size:23px;
+        .notice-button:hover span{
+            font-size:18px;
             color: #339af0;
         }
 
@@ -456,8 +494,8 @@
             $(`#${id}-contents`).show();
             $(`#${id}-edit`).show();
         }
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // 여기서부터 코드를 작성해주시면 됩니다.
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //여기서부터 코드를 작성해주시면 됩니다.
 
         $(document).ready(function () {
             // HTML 문서를 로드할 때마다 실행합니다.
@@ -576,7 +614,6 @@
             // 4. 전달할 data JSON으로 만듭니다.
             let data;
             if (checked === true){
-
                 data = {'username': username, 'contents': contents, 'notice': 'Y'};
             }
             else {
@@ -631,6 +668,22 @@
                 }
             })
         }
+        function hideNotice(){
+            $('#notice-cards-box').hide();
+            $('#notice-button').empty();
+            let temphtml = '<span className="notice-button-span" onClick="showNotice()">공지 보이기</span>';
+            $('#notice-button').append(temphtml);
+            window.location.reload();
+            console.log("hideNotice Active");
+
+        }
+        function showNotice(){
+            $('#notice-cards-box').show();
+            $('#notice-button').empty();
+            let temphtml = '<span className="notice-button-span" onClick="hideNotice()">공지 숨기기</span>';
+            $('#notice-button').append(temphtml);
+            console.log("showNotice Active");
+        }
     </script>
 </head>
 
@@ -653,10 +706,13 @@
         </p>
     </div>
     <div>
-        <button type="button" class="schedule_button" name="schedule">
+        <button type="button" class="schedule-button" name="schedule" style="float: left">
             <span class="schedule-button-span">스터디 계획서</span>
         </button>
-        <button type="button" class="user_button" name="userlist" style="float: right">
+        <button type="button" class="notice-button" name="notice-button" onclick="hideNotice()">
+            <span class="notice-button-span">공지 숨기기</span>
+        </button>
+        <button type="button" class="user-button" name="userlist" style="float: right">
             <span class="user-button-span">참여자 목록</span>
         </button>
     </div>
@@ -721,13 +777,13 @@
 </div>
 <script>
     const schedule_modal = document.querySelector('.schedule_modal');
-    const btnOpenPopup = document.querySelector('.schedule_button');
+    const btnOpenPopup = document.querySelector('.schedule-button');
     btnOpenPopup.addEventListener('click', () => {
         schedule_modal.style.display = 'block';
         document.body.classList.add("stop-scroll");
     });
     const userlist_modal = document.querySelector('.user_modal');
-    const btnOpenPopup2 = document.querySelector('.user_button');
+    const btnOpenPopup2 = document.querySelector('.user-button');
     btnOpenPopup2.addEventListener('click', () => {
         userlist_modal.style.display = 'block';
         document.body.classList.add("stop-scroll");
