@@ -1068,7 +1068,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
     </key>
-    <column id="309" parent="285" name="ssn">
+    <column id="309" parent="285" name="id">
       <DataType>varchar(255)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -1106,7 +1106,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <Position>9</Position>
     </column>
     <key id="318" parent="285" name="PRIMARY">
-      <ColNames>ssn</ColNames>
+      <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
     </key>

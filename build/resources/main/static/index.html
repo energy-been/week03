@@ -392,11 +392,13 @@
             font-family: "Noto Sans KR";
         }
         .modal_body_sub {
-            padding: 50px;
+            padding: 0px;
+            padding-top: 30px;
             color: black;
             text-align: center;
             font-size: 15px;
             font-family: "Noto Sans KR";
+            line-height: 50px;
         }
         .modal_close_btn {
             position: absolute;
@@ -436,6 +438,20 @@
             font-family: "Noto Sans KR";
         }
 
+        .left {
+            width: 50%;
+            float: left;
+            box-sizing: border-box;
+        }
+        .right {
+            width: 50%;
+            float: right;
+            box-sizing: border-box;
+        }
+
+        .right.span{
+            line-height: 10px;
+        }
 
     </style>
     <script>
@@ -494,8 +510,7 @@
             $(`#${id}-contents`).show();
             $(`#${id}-edit`).show();
         }
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //여기서부터 코드를 작성해주시면 됩니다.
+
 
         $(document).ready(function () {
             // HTML 문서를 로드할 때마다 실행합니다.
@@ -706,7 +721,9 @@
                     let studyCount = response['studyCount'];
                     let studyTime = response['studyTime'];
 
-                    let temphtml = `<div>활동 시작 날짜 ${acEndDate}</div>`;
+                    let temphtml = `<div class="left">모집 기간<br>활동 기간<br>카테고리<br>활동 유형<br>참여 인원/최대 인원<br>활동 위치<br>활동 횟수<br>활동 시간<br>상세 내용</div>
+                                    <div class="right">${reStartDate} ~ ${reEndDate}<br>${acStartDate} ~ ${acEndDate}<br>${category}<br>
+                                         ${activeType}<br>${curJoin} / ${maxJoin}<br>${location}<br>${studyCount}<br>${studyTime}시간<br><div style="line-height: 20px; margin-top:20px;">${info}</div></div>`;
                     $('.modal_body_sub').empty();
                     $('.modal_body_sub').append(temphtml);
 
@@ -742,7 +759,6 @@
         </div>
         <p>
             스터디 그룹원과 공유하고 싶은 소식을 남겨주세요 :D<br>
-            * 1달 이내의 소식만 조회할 수 있어요 *
         </p>
     </div>
     <div>
